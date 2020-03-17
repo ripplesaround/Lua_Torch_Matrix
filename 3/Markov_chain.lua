@@ -4,3 +4,101 @@
 --- DateTime: 2020/3/18 01:52
 ---
 
+local data = {1,1,2 ,1 ,2 ,2, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 2, 1, 2, 1, 1, 1}
+local state = 2
+
+
+function stochastic_matrix(data,state)
+    local P = torch.zeros(state,state)
+    local length = #data
+    local max1 = 0
+    local max2 = 0
+    for i = 1,length-1,1 do
+        if data[i+1] == 1 and data[i] ==1 then
+            P[1][1] = P[1][1]+1
+            max1 = max1 +1
+        elseif data[i+1] == 1 and data[i]==2 then
+            P[1][2] = P[1][2]+1
+            max2 = max2 +1
+        elseif data[i+1] == 2 and data[i]==1 then
+            P[2][1] = P[2][1]+1
+            max1 = max1 +1
+        else
+            P[2][2] = P[2][2]+1
+            max2 = max2 +1
+        end
+    end
+    P[1][1] = P[1][1] / max1
+    P[2][1] = P[2][1] / max1
+    P[1][2] = P[1][2] / max2
+    P[2][2] = P[2][2] / max2
+    --print(max1,max2)
+    return P
+end
+P = stochastic_matrix(data,state)
+--print(P)
+
+local pi = torch.Tensor(2,1)
+pi[1] = torch.Tensor{1}
+pi[2] = torch.Tensor{0}
+local time = 4
+function pred(P,K,pi)
+    local P0 = torch.Tensor(P:size()):copy(P)
+    print(P0)
+    for i =1,K,1 do
+        P0 = torch.mm(P,P0)
+        print(P0)
+    end
+    return torch.mm(P0,pi)
+end
+
+--print(pred(P,time,pi))
+
+--A = torch.Tensor({
+--    {0.5,-1/2,-1/4},
+--    {-1/4,1,-1/4},
+--    {-1/4,-1/2,1/2},
+--    {1,1,1}
+--})
+--A = torch.Tensor({
+--    {0,-1/3,0},
+--    {0,-2/3,0},
+--    {0,-1/3,0},
+--    {1,1,1}
+--})
+--B= torch.Tensor({
+--    {0},{0},{0},{1}
+--})
+
+-- fixme 只能解决满rank的情况
+-- done 也只有fullrank的情况下需要解决，否则就有无穷多组解
+
+function pred_long(P)
+    local length = P:size()[1]
+    local B = torch.zeros(length+1,1)
+    B[length+1][1] = 1
+    local A = torch.eye(length,length)
+    A = A - P
+    --x = torch.gels(, )
+    A = torch.cat(A,torch.ones(1,length),1)
+    x = torch.gels(B,A)
+    return x
+end
+
+
+--q, r = torch.qr(A)
+
+print(pred_long(P))
+
+
+--a = torch.Tensor({{6.80, -2.11,  5.66,  5.97,  8.23},
+--                  {-6.05, -3.30,  5.36, -4.44,  1.08},
+--                  {-0.45,  2.58, -2.70,  0.27,  9.04},
+--                  {8.32,  2.71,  4.35,  -7.17,  2.14},
+--                  {-9.67, -5.14, -7.26,  6.08, -6.87}}):t()
+--
+--b = torch.Tensor({{4.02,  6.19, -8.22, -7.57, -3.03},
+--{-1.56,  4.00, -8.67,  1.75,  2.86},
+--{9.81, -4.09, -4.57, -8.61,  8.99}}):t()
+--x = torch.gesv(b, a)
+--print(x)
