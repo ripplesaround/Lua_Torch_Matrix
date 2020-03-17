@@ -139,36 +139,48 @@ function get(A,i,j,a1,a2)
                     col_temp = col_temp + 1
                 end
                 row_temp = row_temp + 1
-                print(col_temp,row_temp,A[col_temp][row_temp])
+                --print(col_temp,row_temp,A[col_temp][row_temp])
                 return A[col_temp][row_temp]
  end    )
     return x
 end
 
 function find_c(A,B,row_base,col_base,row_base2,col_base2)
-    print(row_base,col_base)
-    local temp_A = get(A,3,1,row_base,col_base)
-    local temp_B = get(B,1,2,row_base2,col_base2)
-    local temp_c = torch.zeros(dim_C_col/r,dim_C_row/t)
-    local temp = torch.zeros(dim_C_col/r,dim_C_row/t)
+    --print(row_base,col_base)
+    --local temp_A = get(A,3,1,row_base,col_base)
+    --local temp_B = get(B,1,2,row_base2,col_base2)
+    local ans_C = torch.zeros(dim_C_col/r,dim_C_row)
     local flag = 1
     for i = 1,r,1 do
+        local temp_c = torch.zeros(dim_C_col/r,dim_C_row/t)
         for j = 1,t,1 do
+            local temp = torch.zeros(dim_C_col/r,dim_C_row/t)
             for k =1,s,1 do
-
+                temp  = temp + STP(get(A,i,k,row_base,col_base),get(B,k,j,row_base2,col_base2))
             end
-            --if flag==1 then
-            --
-            --else
-            --
-            --end
+            if j==1then
+                temp_c  = temp_c +temp
+            else
+                temp_c = torch.cat(temp_c,temp,2)
+            end
+            --print(temp)
+        end
+        --print(temp_c)
+        --print("\n------\n")
+        --print(ans_C)
+        --print("\n----------\n")
+        if i==1 then
+            ans_C  = temp_c + ans_C
+        else
+            ans_C = torch.cat(ans_C,temp_c,1)
         end
     end
+    return ans_C
 end
 
-find_c(A,B,row_base,col_base,row_base2,col_base2)
+print(find_c(A,B,row_base,col_base,row_base2,col_base2))
 
-
+print(STP(A,B))
 
 print("end")
 
