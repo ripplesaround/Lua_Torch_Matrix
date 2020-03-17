@@ -82,20 +82,96 @@ end
 --print("f = det")
 --print(basic.det(A)*basic.det(B),basic.det(STP(A,B)))
 
-print("Proposition 4.2.2")
-local test1 = torch.ceil(10*torch.rand(1, 3))
-local test2 = torch.ceil(10*torch.rand(1, 2))
-print("col vector")
-print("STP(test1,test2)")
-print(STP(test1,test2))
-print("Kronecker(test2,test1)")
-print(basic.Kronecker(test2,test1))
-test1 = torch.ceil(10*torch.rand(3, 1))
-test2 = torch.ceil(10*torch.rand(2, 1))
-print("row vector")
-print("STP(test1,test2)")
-print(STP(test1,test2))
-print("Kronecker(test1,test2)")
-print(basic.Kronecker(test1,test2))
+--print("Proposition 4.2.2")
+--local test1 = torch.ceil(10*torch.rand(1, 3))
+--local test2 = torch.ceil(10*torch.rand(1, 2))
+--print("col vector")
+--print("STP(test1,test2)")
+--print(STP(test1,test2))
+--print("Kronecker(test2,test1)")
+--print(basic.Kronecker(test2,test1))
+--test1 = torch.ceil(10*torch.rand(3, 1))
+--test2 = torch.ceil(10*torch.rand(2, 1))
+--print("row vector")
+--print("STP(test1,test2)")
+--print(STP(test1,test2))
+--print("Kronecker(test1,test2)")
+--print(basic.Kronecker(test1,test2))
 
 -- todo 还有一些性质可以去探究
+
+print("Proposition 4.2.3")
+local m = 12
+local n = 12
+local t = 2
+local p = 6
+local q = 8
+local s = 2
+local r = 3
+local dim_C_col = m*basic.lcm(n,p)/n
+local dim_C_row = q*basic.lcm(n,p)/p
+
+-- todo ppt里两个t是一个t么
+local col_base = m / r
+local row_base = n / s
+local col_base2 = p / s
+local row_base2 = q / t
+
+local A = torch.ceil(10*torch.rand(m, n))
+local B = torch.ceil(10*torch.rand(p, q))
+
+
+function get(A,i,j,a1,a2)
+    --a1 = row_base 6
+    --a2 = col_base 4
+    row_temp = (j-1)*a1    --列
+    col_temp = (i-1)*a2+1  --行
+    x = torch.Tensor(a2,a1)
+    x:apply(
+            function()
+                --print(row_temp,col_temp)
+                --if col_temp == i*a1+1 then
+                --    row_temp =
+                --end
+                --print(row_temp,col_temp)
+                if row_temp == j*a1 then
+                    row_temp = (j-1)*a1
+                    col_temp = col_temp + 1
+                end
+                row_temp = row_temp + 1
+                print(col_temp,row_temp,A[col_temp][row_temp])
+                return A[col_temp][row_temp]
+ end    )
+    return x
+end
+
+function find_c(A,B,row_base,col_base,row_base2,col_base2)
+    print(row_base,col_base)
+    local temp_A = get(A,3,1,row_base,col_base)
+    local temp_B = get(B,1,2,row_base2,col_base2)
+    local temp_c = torch.zeros(dim_C_col/r,dim_C_row/t)
+    local temp = torch.zeros(dim_C_col/r,dim_C_row/t)
+    local flag = 1
+    for i = 1,r,1 do
+        for j = 1,t,1 do
+            for k =1,s,1 do
+
+            end
+            --if flag==1 then
+            --
+            --else
+            --
+            --end
+        end
+    end
+end
+
+find_c(A,B,row_base,col_base,row_base2,col_base2)
+
+
+
+print("end")
+
+
+
+
