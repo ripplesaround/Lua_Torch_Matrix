@@ -98,12 +98,11 @@ end
 --print("Kronecker(test1,test2)")
 --print(basic.Kronecker(test1,test2))
 
--- todo 还有一些性质可以去探究
-
 print("Proposition 4.2.3")
 local m = 12
 local n = 12
-local t = 2
+local t = 4
+--local t = 3
 local p = 6
 local q = 8
 local s = 2
@@ -111,7 +110,7 @@ local r = 3
 local dim_C_col = m*basic.lcm(n,p)/n
 local dim_C_row = q*basic.lcm(n,p)/p
 
--- todo ppt里两个t是一个t么
+-- done ppt里两个t是一个t么，不是一个t，B矩阵的t可随意
 local col_base = m / r
 local row_base = n / s
 local col_base2 = p / s
