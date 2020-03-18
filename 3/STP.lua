@@ -25,62 +25,65 @@ end
 --B[2] = torch.Tensor{1,1}
 --print(STP(A,B))
 
---local A = torch.ceil(10*torch.rand(2, 3))
---local B = torch.ceil(10*torch.rand(2, 3))
---local C = torch.ceil(10*torch.rand(2, 3))
---local a = torch.ceil(10*torch.rand(1))[1]
---local b = torch.ceil(10*torch.rand(1))[1]
---local c = torch.ceil(10*torch.rand(1))[1]
---
---print("A")
---print(A)
---print("B")
---print(B)
---print("C")
---print(C)
---print("a",a,"b",b,"c",c)
---print("-----------")
---print("problem 2")
---print("STP(A,B)")
---print(STP(A,B))
---print("STP(B,A)")
---print(STP(B,A))
---print("-----------")
---print("problem 3")
---print("associative laws")
---print("STP(A,STP(B,C))")
---print(STP(A,STP(B,C)))
---print("STP(STP(A,B),C)")
---print(STP(STP(A,B),C))
---print("law of distribution: left")
---print("STP(aA+bB,C)")
---print(STP(a*A+b*B,C))
---print("a*STP(A,C)+b*STP(B,C)")
---print(a*STP(A,C)+b*STP(B,C))
---print("law of distribution: right")
---print("STP(A,bB+cC)")
---print(STP(A,c*C+b*B))
---print("b*STP(A,B)+c*STP(A,C)")
---print(b*STP(A,B)+c*STP(A,C))
---print("-----------")
---print("problem 4")
---print("output: STP(f(A),f(B)), f(STP(A,B))")
---print("f = transpose")
---local At = A:transpose(1,2)
---local Bt = B:transpose(1,2)
---print(STP(At,Bt),(STP(A,B)):transpose(1,2))
---print("f = inverse")
---A = torch.ceil(10*torch.rand(3,3))
---B = torch.ceil(10*torch.rand(3,3))
---local Ain = torch.inverse(A)
---local Bin = torch.inverse(B)
---print(STP(Ain,Bin),torch.inverse(STP(A,B)))
---print("f = trace")
---print(torch.trace(A)*torch.trace(B) , torch.trace(STP(A,B)))
---print("f = rank")
---print(basic.rank(A)*basic.rank(B),basic.rank(STP(A,B)))
---print("f = det")
---print(basic.det(A)*basic.det(B),basic.det(STP(A,B)))
+local A = torch.ceil(10*torch.rand(2, 3))
+local B = torch.ceil(10*torch.rand(2, 3))
+local C = torch.ceil(10*torch.rand(2, 3))
+local a = torch.ceil(10*torch.rand(1))[1]
+local b = torch.ceil(10*torch.rand(1))[1]
+local c = torch.ceil(10*torch.rand(1))[1]
+
+print("A")
+print(A)
+print("B")
+print(B)
+print("C")
+print(C)
+print("a",a,"b",b,"c",c)
+print("-----------")
+print("problem 2")
+print("STP(A,B)")
+print(STP(A,B))
+print("STP(B,A)")
+print(STP(B,A))
+print("-----------")
+print("problem 3")
+print("associative laws")
+print("STP(A,STP(B,C))")
+print(STP(A,STP(B,C)))
+print("STP(STP(A,B),C)")
+print(STP(STP(A,B),C))
+print("law of distribution: left")
+print("STP(aA+bB,C)")
+print(STP(a*A+b*B,C))
+print("a*STP(A,C)+b*STP(B,C)")
+print(a*STP(A,C)+b*STP(B,C))
+print("law of distribution: right")
+print("STP(A,bB+cC)")
+print(STP(A,c*C+b*B))
+print("b*STP(A,B)+c*STP(A,C)")
+print(b*STP(A,B)+c*STP(A,C))
+print("-----------")
+print("problem 4")
+print("output: STP(f(A),f(B)), f(STP(A,B))")
+print("f = transpose")
+local At = A:transpose(1,2)
+local Bt = B:transpose(1,2)
+print(STP(At,Bt),(STP(A,B)):transpose(1,2),STP(Bt,At))
+print("dist",(STP(A,B)):transpose(1,2):dist(STP(Bt,At)))
+print("f = inverse")
+A = torch.ceil(10*torch.rand(3,3))
+B = torch.ceil(10*torch.rand(3,3))
+local Ain = torch.inverse(A)
+local Bin = torch.inverse(B)
+print(STP(Ain,Bin),torch.inverse(STP(A,B)),STP(Bin,Ain))
+print("dist",torch.inverse(STP(A,B)):dist(STP(Bin,Ain)))
+
+print("f = trace")
+print(torch.trace(A)*torch.trace(B) , torch.trace(STP(A,B)))
+print("f = rank")
+print(basic.rank(A)*basic.rank(B),basic.rank(STP(A,B)))
+print("f = det")
+print(basic.det(A)*basic.det(B),basic.det(STP(A,B)))
 
 --print("Proposition 4.2.2")
 --local test1 = torch.ceil(10*torch.rand(1, 3))
@@ -98,88 +101,88 @@ end
 --print("Kronecker(test1,test2)")
 --print(basic.Kronecker(test1,test2))
 
-print("Proposition 4.2.3")
-local m = 12
-local n = 12
-local t = 4
---local t = 2
-local p = 6
-local q = 8
-local s = 2
-local r = 3
-local dim_C_col = m*basic.lcm(n,p)/n
-local dim_C_row = q*basic.lcm(n,p)/p
-
--- done ppt里两个t是一个t么，不是一个t，B矩阵的t可随意
-local col_base = m / r
-local row_base = n / s
-local col_base2 = p / s
-local row_base2 = q / t
-
-local A = torch.ceil(10*torch.rand(m, n))
-local B = torch.ceil(10*torch.rand(p, q))
-
-
-function get(A,i,j,a1,a2)
-    --a1 = row_base 6
-    --a2 = col_base 4
-    row_temp = (j-1)*a1    --列
-    col_temp = (i-1)*a2+1  --行
-    x = torch.Tensor(a2,a1)
-    x:apply(
-            function()
-                --print(row_temp,col_temp)
-                --if col_temp == i*a1+1 then
-                --    row_temp =
-                --end
-                --print(row_temp,col_temp)
-                if row_temp == j*a1 then
-                    row_temp = (j-1)*a1
-                    col_temp = col_temp + 1
-                end
-                row_temp = row_temp + 1
-                --print(col_temp,row_temp,A[col_temp][row_temp])
-                return A[col_temp][row_temp]
- end    )
-    return x
-end
-
-function find_c(A,B,row_base,col_base,row_base2,col_base2)
-    --print(row_base,col_base)
-    --local temp_A = get(A,3,1,row_base,col_base)
-    --local temp_B = get(B,1,2,row_base2,col_base2)
-    local ans_C = torch.zeros(dim_C_col/r,dim_C_row)
-    local flag = 1
-    for i = 1,r,1 do
-        local temp_c = torch.zeros(dim_C_col/r,dim_C_row/t)
-        for j = 1,t,1 do
-            local temp = torch.zeros(dim_C_col/r,dim_C_row/t)
-            for k =1,s,1 do
-                temp  = temp + STP(get(A,i,k,row_base,col_base),get(B,k,j,row_base2,col_base2))
-            end
-            if j==1then
-                temp_c  = temp_c +temp
-            else
-                temp_c = torch.cat(temp_c,temp,2)
-            end
-            --print(temp)
-        end
-        --print(temp_c)
-        --print("\n------\n")
-        --print(ans_C)
-        --print("\n----------\n")
-        if i==1 then
-            ans_C  = temp_c + ans_C
-        else
-            ans_C = torch.cat(ans_C,temp_c,1)
-        end
-    end
-    return ans_C
-end
-
-print(find_c(A,B,row_base,col_base,row_base2,col_base2))
-
-print(STP(A,B))
+--print("Proposition 4.2.3")
+--local m = 12
+--local n = 12
+--local t = 4
+----local t = 2
+--local p = 6
+--local q = 8
+--local s = 2
+--local r = 3
+--local dim_C_col = m*basic.lcm(n,p)/n
+--local dim_C_row = q*basic.lcm(n,p)/p
+--
+---- done ppt里两个t是一个t么，不是一个t，B矩阵的t可随意
+--local col_base = m / r
+--local row_base = n / s
+--local col_base2 = p / s
+--local row_base2 = q / t
+--
+--local A = torch.ceil(10*torch.rand(m, n))
+--local B = torch.ceil(10*torch.rand(p, q))
+--
+--
+--function get(A,i,j,a1,a2)
+--    --a1 = row_base 6
+--    --a2 = col_base 4
+--    row_temp = (j-1)*a1    --列
+--    col_temp = (i-1)*a2+1  --行
+--    x = torch.Tensor(a2,a1)
+--    x:apply(
+--            function()
+--                --print(row_temp,col_temp)
+--                --if col_temp == i*a1+1 then
+--                --    row_temp =
+--                --end
+--                --print(row_temp,col_temp)
+--                if row_temp == j*a1 then
+--                    row_temp = (j-1)*a1
+--                    col_temp = col_temp + 1
+--                end
+--                row_temp = row_temp + 1
+--                --print(col_temp,row_temp,A[col_temp][row_temp])
+--                return A[col_temp][row_temp]
+-- end    )
+--    return x
+--end
+--
+--function find_c(A,B,row_base,col_base,row_base2,col_base2)
+--    --print(row_base,col_base)
+--    --local temp_A = get(A,3,1,row_base,col_base)
+--    --local temp_B = get(B,1,2,row_base2,col_base2)
+--    local ans_C = torch.zeros(dim_C_col/r,dim_C_row)
+--    local flag = 1
+--    for i = 1,r,1 do
+--        local temp_c = torch.zeros(dim_C_col/r,dim_C_row/t)
+--        for j = 1,t,1 do
+--            local temp = torch.zeros(dim_C_col/r,dim_C_row/t)
+--            for k =1,s,1 do
+--                temp  = temp + STP(get(A,i,k,row_base,col_base),get(B,k,j,row_base2,col_base2))
+--            end
+--            if j==1then
+--                temp_c  = temp_c +temp
+--            else
+--                temp_c = torch.cat(temp_c,temp,2)
+--            end
+--            --print(temp)
+--        end
+--        --print(temp_c)
+--        --print("\n------\n")
+--        --print(ans_C)
+--        --print("\n----------\n")
+--        if i==1 then
+--            ans_C  = temp_c + ans_C
+--        else
+--            ans_C = torch.cat(ans_C,temp_c,1)
+--        end
+--    end
+--    return ans_C
+--end
+--
+--print(find_c(A,B,row_base,col_base,row_base2,col_base2))
+--
+--print(STP(A,B))
 
 print("end")
 
