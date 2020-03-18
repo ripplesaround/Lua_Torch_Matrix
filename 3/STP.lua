@@ -102,7 +102,7 @@ print("Proposition 4.2.3")
 local m = 12
 local n = 12
 local t = 4
---local t = 3
+--local t = 2
 local p = 6
 local q = 8
 local s = 2
