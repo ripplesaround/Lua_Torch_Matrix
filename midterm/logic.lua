@@ -102,6 +102,10 @@ function true_table(G,I,basic)
     print("---------------")
     print("  truth table")
     print("X1\tX2\tX3\tX4\tvalue")
+    local true_set = {}
+    local true_set_count = 0
+    local false_set = {}
+    local false_set_count = 0
     for i,v in ipairs(true_value_table) do
         local temp = ""
         for j,t in ipairs(v) do
@@ -111,18 +115,33 @@ function true_table(G,I,basic)
                 temp = temp.."F\t"
             end
         end
+        if v[N+1][1][1] == 1 then
+            true_set_count = true_set_count + 1
+            table.insert(true_set,v)
+        else
+            false_set_count = false_set_count + 1
+            table.insert(false_set,v)
+        end
         print(temp)
     end
-
+    --print(true_set)
     print("---------------")
+    print("struct matrix")
     local str_matrix = struct_matrix(G,I,basic)
-    local temp = torch.Tensor({{1},{0}})
-    local ans = str_matrix
+    --local temp = torch.Tensor({{1},{0}})
+    --local ans = str_matrix
+    --print(str_matrix)
+    --for i=1,N,1 do
+    --    ans = basic.STP(ans,temp)
+    --end
+    --print(ans)
     print(str_matrix)
-    for i=1,N,1 do
-        ans = basic.STP(ans,temp)
-    end
-    print(ans)
+    print("---------------")
+    print("disjunctive normal form")
+    dis_norm_form(true_set,true_set_count)
+    print("---------------")
+    print("conjunctive normal form")
+    con_norm_form(false_set,false_set_count)
 end
 function struct_matrix(G,I,basic)
     local math_basic = require("matrixbasic")
@@ -153,6 +172,46 @@ function struct_matrix(G,I,basic)
         end
     end
     return str_matrix
+end
+function dis_norm_form(true_set,count)
+    local temp = ""
+    for i,v in ipairs(true_set) do
+        temp = temp.."("
+        for j=1,N,1 do
+            if v[j][1][1] == 0 then
+                temp = temp.."~"
+            end
+            temp = temp.."X"..tostring(j)
+            if j<N then
+                temp = temp.." ∧ "
+            end
+        end
+        temp = temp..")"
+        if i<count then
+            temp = temp.." ∨ "
+        end
+    end
+    print(temp)
+end
+function con_norm_form(false_set,count)
+    local temp = ""
+    for i,v in ipairs(false_set) do
+        temp = temp.."("
+        for j=1,N,1 do
+            if v[j][1][1] == 0 then
+                temp = temp.."~"
+            end
+            temp = temp.."X"..tostring(j)
+            if j<N then
+                temp = temp.." ∨ "
+            end
+        end
+        temp = temp..")"
+        if i<count then
+            temp = temp.." ∧ "
+        end
+    end
+    print(temp)
 end
 
 
