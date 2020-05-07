@@ -1,0 +1,11 @@
+graph defaultname {
+	graph []
+	node [fontname="Inconsolata Regular" shape=circle]
+	edge []
+		x1 [label="x1"]
+		x2 [label="x2"]
+		x3 [label="x3"]
+			x1 -- x2
+			x1 -- x3
+			x2 -- x2
+}
