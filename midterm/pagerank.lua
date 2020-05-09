@@ -50,13 +50,16 @@ function cal_pagerank(G,d)
 end
 
 local G = init(N)
+print(G)
 G = tran_matrix(G)
+print(G)
 --local G = torch.Tensor(3, 3)
 --G[1] = torch.Tensor{ 0,0,1 }
 --G[2] = torch.Tensor{ 0.5,0,0 }
 --G[3] = torch.Tensor{ 0.5,1,0 }
-
-local R = cal_pagerank(G,d)
+local R = cal_pagerank(G,1)
+print(R)
+R = cal_pagerank(G,d)
 --local R1 = cal_pagerank_al(G,d)
 print(R)
 print("---------------------")
